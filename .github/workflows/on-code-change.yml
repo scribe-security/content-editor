@@ -82,6 +82,7 @@ jobs:
           path: |
             target/*
             ./*/target/*
+            ./*/tmp/artifacts/*
           #retention-days: ${{ inputs.github_artifact_retention }}
 
       - uses: scribe-security/action-bom@dev
