@@ -92,9 +92,9 @@ jobs:
           verbose: 2
           force: true
            scribe-enable: true
-           product-key: ${{ secrets.SCRIBE_STAGING_PRODUCT_KEY }}
-           scribe-client-id: ${{ secrets.SCRIBE_STAGING_M2M_CLIENT_ID }}
-           scribe-client-secret: ${{ secrets.SCRIBE_STAGING_M2M_CLIENT_SECRET }}
+           product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
+           scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
+           scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
            scribe-url: ${{ env.SCRIBE_URL }}
            scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
            scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
