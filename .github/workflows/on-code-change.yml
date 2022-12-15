@@ -100,6 +100,7 @@ jobs:
           scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
 
       - uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: gensbom-maven-output
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}      
