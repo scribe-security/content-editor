@@ -2,11 +2,6 @@
 # Github actions command reference: https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 name: On Code Change (PR)
 
-env:
-  SCRIBE_URL: "https://api.staging.scribesecurity.com"
-  SCRIBE_LOGIN_URL: "https://scribesecurity-staging.us.auth0.com"
-  SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
-
 # The workflow could also be triggered on PRs
 on:
   pull_request:
@@ -63,6 +58,10 @@ jobs:
     name: Gensbom generate dir bom, upload to scribe
     needs: build
     runs-on: ubuntu-latest
+    env:
+      SCRIBE_URL: "https://api.staging.scribesecurity.com"
+      SCRIBE_LOGIN_URL: "https://scribesecurity-staging.us.auth0.com"
+      SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
     steps:
       - uses: actions/checkout@v2
 
@@ -91,13 +90,13 @@ jobs:
           target: '.'
           verbose: 2
           force: true
-          # scribe-enable: true
-          # product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
-          # scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
-          # scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
-          # scribe-url: ${{ env.SCRIBE_URL }}
-          # scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
-          # scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
+          scribe-enable: true
+          product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
+          scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
+          scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
+          scribe-url: ${{ env.SCRIBE_URL }}
+          scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
+          scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
 
       - uses: actions/upload-artifact@v3
         with:
