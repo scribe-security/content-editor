@@ -40,10 +40,10 @@ jobs:
     env:
       NEXUS_INTERNAL_URL: https://devtools.jahia.com/nexus/content/groups/internal/
     container:
-      image: jahia/cimg-mvn-cache:ga_cimg_openjdk_8.0.312-node
-      credentials:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      image: cimg/openjdk:8.0.312-node
+      # credentials:
+      #   username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #   password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - uses: jahia/jahia-modules-action/build@v2
