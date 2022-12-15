@@ -2,6 +2,11 @@
 # Github actions command reference: https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 name: On Code Change (PR)
 
+env:
+  SCRIBE_URL: "https://api.staging.scribesecurity.com"
+  SCRIBE_LOGIN_URL: "https://scribesecurity-staging.us.auth0.com"
+  SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
+
 # The workflow could also be triggered on PRs
 on:
   pull_request:
@@ -53,6 +58,51 @@ jobs:
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           module_id: content-editor
           mvn_settings_filepath: '.github/maven.settings.xml'
+
+  scribe-bom:
+    name: Gensbom generate dir bom, upload to scribe
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+    # - name: Cache local Maven repository
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: |
+    #       ~/.m2/repository
+    #       /root/.m2/repository
+    #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-maven-
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            target/*
+            ./*/target/*
+          #retention-days: ${{ inputs.github_artifact_retention }}
+
+      - uses: scribe-security/action-bom@dev
+        id: gensbom_bom
+        with:
+          type: dir
+          target: '.'
+          verbose: 2
+          force: true
+          # scribe-enable: true
+          # product-key: ${{ secrets.SCRIBE_STAGING_PRODUCT_KEY }}
+          # scribe-client-id: ${{ secrets.SCRIBE_STAGING_M2M_CLIENT_ID }}
+          # scribe-client-secret: ${{ secrets.SCRIBE_STAGING_M2M_CLIENT_SECRET }}
+          # scribe-url: ${{ env.SCRIBE_URL }}
+          # scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
+          # scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: gensbom-maven-output
+          path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}      
 
   sonar-analysis:
     name: Sonar Analysis
