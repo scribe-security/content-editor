@@ -92,32 +92,32 @@ jobs:
           target: '.'
           verbose: 2
           force: true
-          scribe-enable: true
-          product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
-          scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
-          scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
-          scribe-url: ${{ env.SCRIBE_URL }}
-          scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
-          scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
+          # scribe-enable: true
+          # product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
+          # scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
+          # scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
+          # scribe-url: ${{ env.SCRIBE_URL }}
+          # scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
+          # scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
 
       - uses: actions/upload-artifact@v3
         with:
           name: gensbom-maven-output
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}      
 
-  sonar-analysis:
-    name: Sonar Analysis
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: jahia/jahia-modules-action/sonar-analysis@v2
-        with:
-          primary_release_branch: master
-          github_pr_id: ${{github.event.number}}
-          sonar_url: ${{ secrets.SONAR_URL }}
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-          mvn_settings_filepath: '.github/maven.settings.xml'
+  # sonar-analysis:
+  #   name: Sonar Analysis
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: jahia/jahia-modules-action/sonar-analysis@v2
+  #       with:
+  #         primary_release_branch: master
+  #         github_pr_id: ${{github.event.number}}
+  #         sonar_url: ${{ secrets.SONAR_URL }}
+  #         sonar_token: ${{ secrets.SONAR_TOKEN }}
+  #         mvn_settings_filepath: '.github/maven.settings.xml'
 
   # integration-tests-standalone:
   #   name: Integration Tests (Standalone)
@@ -169,24 +169,24 @@ jobs:
   #         reporter: java-junit
   #         fail-on-error: 'false'
 
-  js-checks:
-    name: Check Javascript dependencies and licenses
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: jahia/jahia-modules-action/dependencies-check-javascript@v2
-        with:
-          github_token: ${{ secrets.GH_API_TOKEN }}
-          show_checklist: 'true'
+  # js-checks:
+  #   name: Check Javascript dependencies and licenses
+  #   if: always()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: jahia/jahia-modules-action/dependencies-check-javascript@v2
+  #       with:
+  #         github_token: ${{ secrets.GH_API_TOKEN }}
+  #         show_checklist: 'true'
 
-  java-checks:
-    name: Check Java dependencies and licenses
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: jahia/jahia-modules-action/dependencies-check-java@v2
-        with:
-          github_token: ${{ secrets.GH_API_TOKEN }}
-          show_checklist: 'true'
+  # java-checks:
+  #   name: Check Java dependencies and licenses
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: jahia/jahia-modules-action/dependencies-check-java@v2
+  #       with:
+  #         github_token: ${{ secrets.GH_API_TOKEN }}
+  #         show_checklist: 'true'
