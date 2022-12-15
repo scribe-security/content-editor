@@ -28,15 +28,15 @@ jobs:
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
 
-  static-analysis:
-    name: Static Analysis (linting, vulns)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: Jahia/jahia-modules-action/static-analysis@v2
-        with:
-          node_version: 14
-          auditci_level: critical
+  # static-analysis:
+  #   name: Static Analysis (linting, vulns)
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: Jahia/jahia-modules-action/static-analysis@v2
+  #       with:
+  #         node_version: 14
+  #         auditci_level: critical
 
   build:
     name: Build Module
@@ -82,7 +82,6 @@ jobs:
           path: |
             target/*
             ./*/target/*
-            ./*/tmp/artifacts/*
           #retention-days: ${{ inputs.github_artifact_retention }}
 
       - uses: scribe-security/action-bom@dev
