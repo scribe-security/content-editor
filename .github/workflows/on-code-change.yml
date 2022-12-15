@@ -90,6 +90,7 @@ jobs:
           target: '.'
           verbose: 2
           force: true
+          final-artifact: true
           scribe-enable: true
           product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
           scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
