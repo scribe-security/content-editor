@@ -17,21 +17,13 @@ help:
 
 
 .PHONY: build
-build: ## Build project
+build: ## Build package
 	mvn -B -U -ntp -s .github/maven.settings.xml clean install
 
-prepare: ## Prepare project
-	mkdir /tmp/artifacts/
-	find . -type f -path '*/target/*-SNAPSHOT*.jar' -exec cp '{}' /tmp/artifacts/ ';' || :
-	if [ -f target/*source-release.zip ]; then
-		echo "A source file is present, copying it to the artifacts folder"
-		cp target/*source-release.zip /tmp/artifacts/ || :
-	fi
-	if [ -d ${{ inputs.module_id }}/ ]; then
-		echo "Copying jar from: ${{ inputs.module_id }}/"
-		cp ${{ inputs.module_id }}/target/*.jar /tmp/artifacts/ || :
-		if [ ! -d target/ ]; then
-		mkdir target/
-		fi
-		cp ${{ inputs.module_id }}/target/*.jar target/ || :
-	fi
+.PHONY: copy-dep
+copy-deb: ## Copy dependencies to provision artifacts
+	mvn -B -s .github/maven.settings.xml dependency:copy-dependencies -DexcludeTransitive=true -DincludeScope=provided -DincludeGroupIds=org.jahia.modules -DincludeTypes=jar
+
+.PHONY: prepare
+prepare: ## Prepare artifacts
+	@bash prepare.sh
