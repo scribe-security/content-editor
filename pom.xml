@@ -229,8 +229,8 @@
                     <schemaVersion>1.4</schemaVersion>
                     <includeBomSerialNumber>true</includeBomSerialNumber>
                     <includeCompileScope>true</includeCompileScope>
-                    <includeProvidedScope>false</includeProvidedScope>
                     <includeRuntimeScope>true</includeRuntimeScope>
+                    <includeProvidedScope>false</includeProvidedScope>
                     <includeSystemScope>false</includeSystemScope>
                     <includeTestScope>false</includeTestScope>
                     <includeLicenseText>false</includeLicenseText>
