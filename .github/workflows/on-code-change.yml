@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: jahia/jahia-modules-action/update-signature@v2
-        with:
-          nexus_username: ${{ secrets.NEXUS_USERNAME }}
-          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
+      # - uses: jahia/jahia-modules-action/update-signature@v2
+      #   with:
+      #     nexus_username: ${{ secrets.NEXUS_USERNAME }}
+      #     nexus_password: ${{ secrets.NEXUS_PASSWORD }}
+      #     nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
 
   # static-analysis:
   #   name: Static Analysis (linting, vulns)
@@ -63,6 +63,7 @@ jobs:
           force: true
           final-artifact: true
           package-group: javascript,java
+          components: packages
           filter-regex: '**/tests/**,**/.git/**'
           scribe-enable: false
           product-key: ${{ secrets.productkey }}
@@ -73,7 +74,6 @@ jobs:
         with:
           name: gensbom-maven-npm
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
-
 
   # sonar-analysis:
   #   name: Sonar Analysis
