@@ -54,6 +54,7 @@ jobs:
           path: |
             node_modules
           key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
+      - run: ls -lh
       # - uses: jahia/jahia-modules-action/build@v2
       #   with:
       #     nexus_username: ${{ secrets.NEXUS_USERNAME }}
@@ -71,7 +72,6 @@ jobs:
       SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
     steps:
       - uses: actions/checkout@v2
-        if: always()
     # - name: Cache local Maven repository
     #   uses: actions/cache@v3
     #   with:
@@ -90,14 +90,17 @@ jobs:
       #       target/*
       #       ./*/target/*
           #retention-days: ${{ inputs.github_artifact_retention }}
+      # - run: ls -lh
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        if: ${{ inputs.build_artifacts != '' }}
-        with:
-          path: |
-            target/*
-            ./*/target/*
+      # - name: Download build artifacts
+      #   uses: actions/download-artifact@v3
+      #   if: ${{ inputs.build_artifacts != '' }}
+      #   with:
+      #     path: |
+      #       target/*
+      #       ./*/target/*
+
+      - run: ls -lh
 
       - name: Restore npm cache
         id: npm-cache
@@ -106,6 +109,8 @@ jobs:
           path: |
             node_modules
           key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
+
+      - run: ls -lh
 
       - uses: scribe-security/action-bom@dev
         if: always()
