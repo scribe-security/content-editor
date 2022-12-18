@@ -42,21 +42,19 @@ jobs:
     container:
       image: cimg/openjdk:8.0.312-node
       options: --user root
-      volumes:
-        - node_modules:node_modules
       # credentials:
       #   username: ${{ secrets.DOCKERHUB_USERNAME }}
       #   password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Restore npm cache
-        id: npm-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-          key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
+
+      # - name: Restore npm cache
+      #   id: npm-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       node_modules
+      #     key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
 
       - run: ls -lh
       - uses: jahia/jahia-modules-action/build@v2
