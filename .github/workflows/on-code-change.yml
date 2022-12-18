@@ -46,6 +46,16 @@ jobs:
       #   username: ${{ secrets.DOCKERHUB_USERNAME }}
       #   password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
+      - name: Restore npm cache
+        id: npm-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+                node
+                node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+              ${{ runner.os }}-npm-
       - uses: actions/checkout@v2
       - uses: jahia/jahia-modules-action/build@v2
         with:
@@ -82,6 +92,17 @@ jobs:
             target/*
             ./*/target/*
           #retention-days: ${{ inputs.github_artifact_retention }}
+
+      - name: Restore npm cache
+        id: npm-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+                node
+                node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+              ${{ runner.os }}-npm-
 
       - uses: scribe-security/action-bom@dev
         id: gensbom_bom
