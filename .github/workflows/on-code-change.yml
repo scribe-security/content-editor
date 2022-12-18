@@ -39,9 +39,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXUS_INTERNAL_URL: https://devtools.jahia.com/nexus/content/groups/internal/
-    # container:
-    #   image: cimg/openjdk:8.0.312-node
-    #   options: --user root
+    container:
+      image: cimg/openjdk:8.0.312-node
+      options: --user root
       # credentials:
       #   username: ${{ secrets.DOCKERHUB_USERNAME }}
       #   password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -54,14 +54,31 @@ jobs:
           path: |
             node_modules
           key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
-      - run: ls -lh
       - run: mkdir node_modules; echo "test" > node_modules/text.txt
+      - run: ls -lh
+
       # - uses: jahia/jahia-modules-action/build@v2
       #   with:
       #     nexus_username: ${{ secrets.NEXUS_USERNAME }}
       #     nexus_password: ${{ secrets.NEXUS_PASSWORD }}
       #     module_id: content-editor
       #     mvn_settings_filepath: '.github/maven.settings.xml'
+
+      - uses: scribe-security/action-bom@dev
+        id: gensbom_bom
+        with:
+          type: dir
+          target: '.'
+          verbose: 2
+          force: true
+          final-artifact: true
+          scribe-enable: true
+          product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
+          scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
+          scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
+          scribe-url: ${{ env.SCRIBE_URL }}
+          scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
+          scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
 
   scribe-bom:
     name: Gensbom generate dir bom, upload to scribe
