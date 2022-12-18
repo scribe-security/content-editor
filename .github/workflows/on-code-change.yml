@@ -54,7 +54,7 @@ jobs:
           path: |
             node_modules
           key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
-      - run: mkdir node_modules; echo "test" > node_modules/text.txt
+      
       - run: ls -lh
 
       # - uses: jahia/jahia-modules-action/build@v2
