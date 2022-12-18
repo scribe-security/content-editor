@@ -72,8 +72,45 @@ jobs:
 
       - uses: actions/upload-artifact@v3        
         with:
-          name: gensbom-maven-npm
+          name: sboms
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
+
+  # scribe-sbom:
+  #   name: Scribe sbom
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Download build artifacts
+  #       if: always()
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: build-artifacts
+  #         path: |
+  #           target/*
+  #           ./*/target/*
+
+  #     - uses: scribe-security/action-bom@dev
+  #       id: gensbom_bom
+  #       with:
+  #         type: dir
+  #         target: '.'
+  #         verbose: 2
+  #         force: true
+  #         final-artifact: true
+  #         package-type: sbom
+  #         components: packages
+  #         filter-regex: '**/tests/**,**/.git/**'
+  #         scribe-enable: false
+  #         product-key: ${{ secrets.productkey_sbom }}
+  #         scribe-client-id: ${{ secrets.clientid }}
+  #         scribe-client-secret: ${{ secrets.clientsecret }}
+
+  #     - uses: actions/upload-artifact@v3        
+  #       with:
+  #         name: sboms
+  #         path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
 
   # sonar-analysis:
   #   name: Sonar Analysis
