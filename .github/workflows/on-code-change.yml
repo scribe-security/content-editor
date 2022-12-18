@@ -85,17 +85,16 @@ jobs:
     #     restore-keys: |
     #       ${{ runner.os }}-maven-
 
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: build-artifacts
-          path: |
-            target/*
-            ./*/target/*
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: build-artifacts
+      #     path: |
+      #       target/*
+      #       ./*/target/*
           #retention-days: ${{ inputs.github_artifact_retention }}
 
       - name: Restore npm cache
-        if: always()
         id: npm-cache
         uses: actions/cache@v3
         with:
