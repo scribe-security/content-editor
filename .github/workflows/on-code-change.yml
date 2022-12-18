@@ -52,11 +52,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            node
             node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-              ${{ runner.os }}-npm-
+          key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
       # - uses: jahia/jahia-modules-action/build@v2
       #   with:
       #     nexus_username: ${{ secrets.NEXUS_USERNAME }}
@@ -94,16 +91,21 @@ jobs:
       #       ./*/target/*
           #retention-days: ${{ inputs.github_artifact_retention }}
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        if: ${{ inputs.build_artifacts != '' }}
+        with:
+          path: |
+            target/*
+            ./*/target/*
+
       - name: Restore npm cache
         id: npm-cache
         uses: actions/cache@v3
         with:
           path: |
-            node
             node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-              ${{ runner.os }}-npm-
+          key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
 
       - uses: scribe-security/action-bom@dev
         if: always()
