@@ -102,7 +102,7 @@ jobs:
           package-type: sbom
           components: packages,files,syft
           filter-regex: '**/tests/**,**/.git/**'
-          scribe-enable: false
+          scribe-enable: true
           product-key: ${{ secrets.productkey_sbom }}
           scribe-client-id: ${{ secrets.clientid }}
           scribe-client-secret: ${{ secrets.clientsecret }}
