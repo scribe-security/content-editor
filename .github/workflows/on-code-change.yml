@@ -108,10 +108,20 @@ jobs:
       - run: ls .
         if: always()
 
+      - run: ls ./node_modules
+        if: always()
+
+      - run: ls ./src
+        if: always()
+
       - name: ls /
         if: always()
         run: ls /
       
+      - name: ls /tmp
+        if: always()
+        run: ls /tmp
+
       - uses: scribe-security/action-bom@dev
         if: always()
         id: collect_npm
