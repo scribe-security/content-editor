@@ -64,7 +64,7 @@ jobs:
           final-artifact: true
           package-group: javascript,java
           components: packages
-          filter-regex: `**/tests/**,**/.git/**`
+          filter-regex: **/tests/**,**/.git/**
           scribe-enable: false
           product-key: ${{ secrets.productkey }}
           scribe-client-id: ${{ secrets.clientid }}
