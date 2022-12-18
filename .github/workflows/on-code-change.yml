@@ -77,7 +77,6 @@ jobs:
             ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
             target/jahia-modules.bom.json
 
-
   scribe-sbom:
     name: Scribe sbom
     needs: build
