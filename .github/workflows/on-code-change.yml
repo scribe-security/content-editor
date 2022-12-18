@@ -106,32 +106,34 @@ jobs:
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
 
       - run: ls .
+        if: always()
+
       - name: ls /
+        if: always()
         run: ls /
       
+      - uses: scribe-security/action-bom@dev
+        if: always()
+        id: collect_npm
+        with:
+          type: dir
+          target: '/node_modules'
+          verbose: 2
+          force: true
+          final-artifact: true
+          scribe-enable: true
+          product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
+          scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
+          scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
+          scribe-url: ${{ env.SCRIBE_URL }}
+          scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
+          scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
 
-      # - uses: scribe-security/action-bom@dev
-      #   if: always()
-      #   id: collect_npm
-      #   with:
-      #     type: dir
-      #     target: 'node_modules'
-      #     verbose: 2
-      #     force: true
-      #     final-artifact: true
-      #     scribe-enable: true
-      #     product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
-      #     scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
-      #     scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
-      #     scribe-url: ${{ env.SCRIBE_URL }}
-      #     scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
-      #     scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
-
-      # - uses: actions/upload-artifact@v3
-      #   if: always()
-      #   with:
-      #     name: gensbom-maven-npm
-      #     path: ${{ steps.collect_npm.outputs.OUTPUT_PATH }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: gensbom-maven-npm
+          path: ${{ steps.collect_npm.outputs.OUTPUT_PATH }}
 
   # sonar-analysis:
   #   name: Sonar Analysis
