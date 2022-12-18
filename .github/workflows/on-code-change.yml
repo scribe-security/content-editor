@@ -56,23 +56,16 @@ jobs:
 
       - uses: scribe-security/action-bom@dev
         id: gensbom_bom
-        env:
-          SCRIBE_URL: "https://api.staging.scribesecurity.com"
-          SCRIBE_LOGIN_URL: "https://scribesecurity-staging.us.auth0.com"
-          SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
         with:
           type: dir
           target: '.'
           verbose: 2
           force: true
           final-artifact: true  
-          # scribe-enable: true
-          # product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
-          # scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
-          # scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
-          # scribe-url: ${{ env.SCRIBE_URL }}
-          # scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
-          # scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
+          scribe-enable: true
+          product-key: ${{ secrets.productkey }}
+          scribe-client-id: ${{ secrets.clientid }}
+          scribe-client-secret: ${{ secrets.clientsecret }}
 
       - uses: actions/upload-artifact@v3        
         with:
