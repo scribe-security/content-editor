@@ -72,6 +72,7 @@ jobs:
           name: gensbom-maven-npm
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
 
+
   # sonar-analysis:
   #   name: Sonar Analysis
   #   needs: build
