@@ -235,8 +235,8 @@
                     <includeTestScope>true</includeTestScope>
                     <includeLicenseText>true</includeLicenseText>
                     <outputReactorProjects>false</outputReactorProjects>
-                    <outputFormat>all</outputFormat>
-                    <outputName>.bom.json</outputName>
+                    <outputFormat>json</outputFormat>
+                    <outputName>${parent.artifactId}.bom.json</outputName>
                 </configuration>
             </plugin>
 
