@@ -236,7 +236,7 @@
                     <includeLicenseText>true</includeLicenseText>
                     <outputReactorProjects>false</outputReactorProjects>
                     <outputFormat>all</outputFormat>
-                    <outputName>${parent.artifactId}.bom.json</outputName>
+                    <outputName>.bom.json</outputName>
                 </configuration>
             </plugin>
 
