@@ -75,6 +75,7 @@ jobs:
           name: sboms
           path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
 
+
   scribe-sbom:
     name: Scribe sbom
     needs: build
