@@ -77,6 +77,7 @@ jobs:
             ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
             target/jahia-modules.bom.json
 
+
   scribe-sbom:
     name: Scribe sbom
     needs: build
@@ -99,7 +100,7 @@ jobs:
           force: true
           final-artifact: true
           package-type: sbom
-          components: packages,files,syft
+          components: packages,files
           filter-regex: '**/tests/**,**/.git/**'
           scribe-enable: true
           product-key: ${{ secrets.productkey_sbom }}
