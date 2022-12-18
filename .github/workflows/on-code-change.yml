@@ -63,7 +63,7 @@ jobs:
           force: true
           final-artifact: true
           package-type: javascript,java
-          components: packages
+          components: packages,files
           filter-regex: '**/tests/**,**/.git/**'
           scribe-enable: true
           product-key: ${{ secrets.productkey }}
@@ -101,7 +101,7 @@ jobs:
           force: true
           final-artifact: true
           package-type: sbom
-          components: packages
+          components: packages,files
           filter-regex: '**/tests/**,**/.git/**'
           scribe-enable: false
           product-key: ${{ secrets.productkey_sbom }}
