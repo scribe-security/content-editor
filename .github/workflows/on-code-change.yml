@@ -63,6 +63,7 @@ jobs:
           force: true
           final-artifact: true
           package-type: javascript,java
+          package-group: install
           filter-regex: '**/tests/**,**/.git/**'
           scribe-enable: true
           product-key: ${{ secrets.productkey }}

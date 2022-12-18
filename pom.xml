@@ -229,11 +229,11 @@
                     <schemaVersion>1.4</schemaVersion>
                     <includeBomSerialNumber>true</includeBomSerialNumber>
                     <includeCompileScope>true</includeCompileScope>
-                    <includeProvidedScope>true</includeProvidedScope>
+                    <includeProvidedScope>false</includeProvidedScope>
                     <includeRuntimeScope>true</includeRuntimeScope>
-                    <includeSystemScope>true</includeSystemScope>
-                    <includeTestScope>true</includeTestScope>
-                    <includeLicenseText>true</includeLicenseText>
+                    <includeSystemScope>false</includeSystemScope>
+                    <includeTestScope>false</includeTestScope>
+                    <includeLicenseText>false</includeLicenseText>
                     <outputReactorProjects>false</outputReactorProjects>
                     <outputFormat>json</outputFormat>
                     <outputName>${parent.artifactId}.bom.json</outputName>
