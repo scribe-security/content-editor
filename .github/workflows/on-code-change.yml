@@ -23,15 +23,15 @@ jobs:
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
 
-  # static-analysis:
-  #   name: Static Analysis (linting, vulns)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: Jahia/jahia-modules-action/static-analysis@v2
-  #       with:
-  #         node_version: 14
-  #         auditci_level: critical
+  static-analysis:
+    name: Static Analysis (linting, vulns)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Jahia/jahia-modules-action/static-analysis@v2
+        with:
+          node_version: 14
+          auditci_level: critical
 
   build:
     name: Build Module
@@ -42,21 +42,11 @@ jobs:
     container:
       image: cimg/openjdk:8.0.312-node
       options: --user root
-      # credentials:
-      #   username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #   password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
-      - uses: actions/checkout@v2
-
-      # - name: Restore npm cache
-      #   id: npm-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       node_modules
-      #     key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
-
-      - run: ls -lh
+      - uses: actions/checkout@v2      
       - uses: jahia/jahia-modules-action/build@v2
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
@@ -66,12 +56,16 @@ jobs:
 
       - uses: scribe-security/action-bom@dev
         id: gensbom_bom
+        env:
+          SCRIBE_URL: "https://api.staging.scribesecurity.com"
+          SCRIBE_LOGIN_URL: "https://scribesecurity-staging.us.auth0.com"
+          SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
         with:
           type: dir
           target: '.'
           verbose: 2
           force: true
-          final-artifact: true
+          final-artifact: true  
           # scribe-enable: true
           # product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
           # scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
@@ -80,190 +74,93 @@ jobs:
           # scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
           # scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
 
-  scribe-bom:
-    name: Gensbom generate dir bom, upload to scribe
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      SCRIBE_URL: "https://api.staging.scribesecurity.com"
-      SCRIBE_LOGIN_URL: "https://scribesecurity-staging.us.auth0.com"
-      SCRIBE_AUDIENCE: "api.staging.scribesecurity.com"
-    steps:
-      - uses: actions/checkout@v2
-    # - name: Cache local Maven repository
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: |
-    #       ~/.m2/repository
-    #       /root/.m2/repository
-    #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-maven-
-
-      # - uses: actions/upload-artifact@v3
-      #   if: always()
-      #   with:
-      #     name: build-artifacts
-      #     path: |
-      #       target/*
-      #       ./*/target/*
-          #retention-days: ${{ inputs.github_artifact_retention }}
-      # - run: ls -lh
-
-      # - name: Download build artifacts
-      #   uses: actions/download-artifact@v3
-      #   if: ${{ inputs.build_artifacts != '' }}
-      #   with:
-      #     path: |
-      #       target/*
-      #       ./*/target/*
-
-      - run: ls -lh
-
-      - name: Restore npm cache
-        id: npm-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-          key: ${{ runner.os }}-npm2-${{ hashFiles('**/package.json') }}
-
-      - run: ls -lh
-
-      - uses: scribe-security/action-bom@dev
-        if: always()
-        id: gensbom_bom
-        with:
-          type: dir
-          target: '.'
-          verbose: 2
-          force: true
-          final-artifact: true
-          scribe-enable: true
-          product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
-          scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
-          scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
-          scribe-url: ${{ env.SCRIBE_URL }}
-          scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
-          scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
-
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: gensbom-maven-output
-          path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
-
-      - run: ls .
-        if: always()
-
-      - run: ls ./node_modules
-        if: always()
-
-      - uses: scribe-security/action-bom@dev
-        if: always()
-        id: collect_npm
-        with:
-          type: dir
-          target: '/node_modules'
-          verbose: 2
-          force: true
-          final-artifact: true
-          scribe-enable: true
-          product-key: ${{ secrets.SCRIBE_STAGING_EITAN_PRODUCT_KEY }}
-          scribe-client-id: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_ID }}
-          scribe-client-secret: ${{ secrets.SCRIBE_STAGING_EITAN_M2M_CLIENT_SECRET }}
-          scribe-url: ${{ env.SCRIBE_URL }}
-          scribe-login-url: ${{ env.SCRIBE_LOGIN_URL }}
-          scribe-audience: ${{ env.SCRIBE_AUDIENCE }}
-
-      - uses: actions/upload-artifact@v3
-        if: always()
+      - uses: actions/upload-artifact@v3        
         with:
           name: gensbom-maven-npm
-          path: ${{ steps.collect_npm.outputs.OUTPUT_PATH }}
+          path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
 
-  # sonar-analysis:
-  #   name: Sonar Analysis
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: jahia/jahia-modules-action/sonar-analysis@v2
-  #       with:
-  #         primary_release_branch: master
-  #         github_pr_id: ${{github.event.number}}
-  #         sonar_url: ${{ secrets.SONAR_URL }}
-  #         sonar_token: ${{ secrets.SONAR_TOKEN }}
-  #         mvn_settings_filepath: '.github/maven.settings.xml'
+  sonar-analysis:
+    name: Sonar Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jahia/jahia-modules-action/sonar-analysis@v2
+        with:
+          primary_release_branch: master
+          github_pr_id: ${{github.event.number}}
+          sonar_url: ${{ secrets.SONAR_URL }}
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
+          mvn_settings_filepath: '.github/maven.settings.xml'
 
-  # integration-tests-standalone:
-  #   name: Integration Tests (Standalone)
-  #   needs: build
-  #   runs-on: self-hosted
-  #   timeout-minutes: 60
-  #   steps:
-  #     - uses: jahia/jahia-modules-action/helper@v2
-  #     - uses: KengoTODA/actions-setup-docker-compose@main
-  #       with:
-  #         version: '1.29.2'
-  #     - uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 'lts/*'
-  #     - uses: actions/checkout@v2
-  #     - uses: jahia/jahia-modules-action/integration-tests@v2
-  #       with:
-  #         module_id: content-editor
-  #         testrail_project: Content Editor
-  #         tests_manifest: provisioning-manifest-build.yml
-  #         should_use_build_artifacts: true
-  #         jahia_cluster_enabled: false
-  #         should_skip_testrail: true
-  #         jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
-  #         github_artifact_name: content-editor-standalone-artifacts-${{ github.run_number }}
-  #         bastion_ssh_private_key: ${{ secrets.BASTION_SSH_PRIVATE_KEY_JAHIACI }}
-  #         jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
-  #         docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
-  #         nexus_username: ${{ secrets.NEXUS_USERNAME }}
-  #         nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-  #         tests_report_name: Test report (Standalone)
-  #         testrail_username: ${{ secrets.TESTRAIL_USERNAME }}
-  #         testrail_password: ${{ secrets.TESTRAIL_PASSWORD }}
-  #         incident_pagerduty_api_key: ${{ secrets.INCIDENT_PAGERDUTY_API_KEY }}
-  #         incident_pagerduty_reporter_email: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_EMAIL }}
-  #         incident_pagerduty_reporter_id: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_ID }}
-  #         incident_google_spreadsheet_id: ${{ secrets.INCIDENT_GOOGLE_SPREADSHEET_ID }}
-  #         incident_google_client_email: ${{ secrets.INCIDENT_GOOGLE_CLIENT_EMAIL }}
-  #         incident_google_api_key_base64: ${{ secrets.INCIDENT_GOOGLE_PRIVATE_KEY_BASE64 }}
-  #         zencrepes_secret: ${{ secrets.ZENCREPES_WEBHOOK_SECRET }}
-  #         cypress_configuration_file: cypress.pull-requests.config.ts
-  #     - name: Test Report
-  #       uses: dorny/test-reporter@v1
-  #       if: success() || failure()
-  #       with:
-  #         name: Tests Report (Standalone)
-  #         path: tests/artifacts/results/xml_reports/*.xml
-  #         reporter: java-junit
-  #         fail-on-error: 'false'
+  integration-tests-standalone:
+    name: Integration Tests (Standalone)
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 60
+    steps:
+      - uses: jahia/jahia-modules-action/helper@v2
+      - uses: KengoTODA/actions-setup-docker-compose@main
+        with:
+          version: '1.29.2'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+      - uses: actions/checkout@v2
+      - uses: jahia/jahia-modules-action/integration-tests@v2
+        with:
+          module_id: content-editor
+          testrail_project: Content Editor
+          tests_manifest: provisioning-manifest-build.yml
+          should_use_build_artifacts: true
+          jahia_cluster_enabled: false
+          should_skip_testrail: true
+          jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
+          github_artifact_name: content-editor-standalone-artifacts-${{ github.run_number }}
+          bastion_ssh_private_key: ${{ secrets.BASTION_SSH_PRIVATE_KEY_JAHIACI }}
+          jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          nexus_username: ${{ secrets.NEXUS_USERNAME }}
+          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
+          tests_report_name: Test report (Standalone)
+          testrail_username: ${{ secrets.TESTRAIL_USERNAME }}
+          testrail_password: ${{ secrets.TESTRAIL_PASSWORD }}
+          incident_pagerduty_api_key: ${{ secrets.INCIDENT_PAGERDUTY_API_KEY }}
+          incident_pagerduty_reporter_email: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_EMAIL }}
+          incident_pagerduty_reporter_id: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_ID }}
+          incident_google_spreadsheet_id: ${{ secrets.INCIDENT_GOOGLE_SPREADSHEET_ID }}
+          incident_google_client_email: ${{ secrets.INCIDENT_GOOGLE_CLIENT_EMAIL }}
+          incident_google_api_key_base64: ${{ secrets.INCIDENT_GOOGLE_PRIVATE_KEY_BASE64 }}
+          zencrepes_secret: ${{ secrets.ZENCREPES_WEBHOOK_SECRET }}
+          cypress_configuration_file: cypress.pull-requests.config.ts
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Tests Report (Standalone)
+          path: tests/artifacts/results/xml_reports/*.xml
+          reporter: java-junit
+          fail-on-error: 'false'
 
-  # js-checks:
-  #   name: Check Javascript dependencies and licenses
-  #   if: always()
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: jahia/jahia-modules-action/dependencies-check-javascript@v2
-  #       with:
-  #         github_token: ${{ secrets.GH_API_TOKEN }}
-  #         show_checklist: 'true'
+  js-checks:
+    name: Check Javascript dependencies and licenses
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jahia/jahia-modules-action/dependencies-check-javascript@v2
+        with:
+          github_token: ${{ secrets.GH_API_TOKEN }}
+          show_checklist: 'true'
 
-  # java-checks:
-  #   name: Check Java dependencies and licenses
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: jahia/jahia-modules-action/dependencies-check-java@v2
-  #       with:
-  #         github_token: ${{ secrets.GH_API_TOKEN }}
-  #         show_checklist: 'true'
+  java-checks:
+    name: Check Java dependencies and licenses
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jahia/jahia-modules-action/dependencies-check-java@v2
+        with:
+          github_token: ${{ secrets.GH_API_TOKEN }}
+          show_checklist: 'true'
