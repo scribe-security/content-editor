@@ -79,7 +79,7 @@ jobs:
       - run: ls ./node_modules
         if: always()
       - uses: actions/checkout@v2
-
+        if: always()
     # - name: Cache local Maven repository
     #   uses: actions/cache@v3
     #   with:
@@ -91,6 +91,7 @@ jobs:
     #       ${{ runner.os }}-maven-
 
       - uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: build-artifacts
           path: |
@@ -99,6 +100,7 @@ jobs:
           #retention-days: ${{ inputs.github_artifact_retention }}
 
       - name: Restore npm cache
+        if: always()
         id: npm-cache
         uses: actions/cache@v3
         with:
@@ -110,6 +112,7 @@ jobs:
               ${{ runner.os }}-npm-
 
       - uses: scribe-security/action-bom@dev
+        if: always()
         id: gensbom_bom
         with:
           type: dir
