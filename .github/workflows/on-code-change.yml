@@ -109,7 +109,8 @@ jobs:
       - uses: actions/upload-artifact@v3        
         with:
           name: sboms
-          path: ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
+          path: |
+            ${{ steps.gensbom_bom.outputs.OUTPUT_PATH }}
 
   # sonar-analysis:
   #   name: Sonar Analysis
