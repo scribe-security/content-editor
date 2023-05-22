@@ -212,7 +212,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <version>2.7.3</version>
@@ -238,7 +238,7 @@
                     <outputFormat>json</outputFormat>
                     <outputName>${parent.artifactId}.bom</outputName>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
         </plugins>
     </build>

@@ -24,6 +24,11 @@ build: ## Build package
 copy-deb: ## Copy dependencies to provision artifacts
 	mvn -B -s .github/maven.settings.xml dependency:copy-dependencies -DexcludeTransitive=true -DincludeScope=provided -DincludeGroupIds=org.jahia.modules -DincludeTypes=jar
 
+.PHONY: copy-dep
+tree: ## Copy dependencies to provision artifacts
+	mvn -B -s .github/maven.settings.xml dependency:tree -DexcludeTransitive=false -DincludeTypes=jar
+
+
 .PHONY: prepare
 prepare: ## Prepare artifacts
 	@bash prepare.sh
